@@ -6,6 +6,17 @@ from subprocess import Popen, PIPE
 from dask.distributed import Client
 
 
+def call_vmd(cwd):
+    if cwd is None:
+        cwd = Path(".")
+
+    # TODO
+    vmd_scriptfile = Path("data/VMD.tcl")
+    vmd_cmd = ["vmd", ]
+
+    return
+
+
 def call_mwfn(inp_fn, stdin, cwd=None):
     """
     Function strongly based on eljost's pysisyphus.wrapper.mwfn.make_cdd
@@ -24,7 +35,7 @@ def call_mwfn(inp_fn, stdin, cwd=None):
     return stdout, stderr
 
 
-def make_cdd(inp_fn, log, state, cwd=".", inc=None, keep=False, quality=2):
+def make_cdd(inp_fn, log, state, cwd=".", inc=None, keep=True, quality=2):
     """
     Function strongly based on eljost's pysisyphus.wrapper.mwfn.make_cdd
     https://github.com/eljost/pysisyphus/blob/dev/pysisyphus/wrapper/mwfn.py

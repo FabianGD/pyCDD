@@ -15,50 +15,50 @@ axes location off
 # start plotting loops
 set Iter 0
 
-# loop over all orbitals
-foreach Orb [list {{ orbs }}] {
-  # load cube into VMD
-  mol load cube ${Orb}.cube
+# # loop over all orbitals
+# foreach Orb [list {{ orbs }}] {
+#   # load cube into VMD
+#   mol load cube ${Orb}.cub
 
-  # set camera perspective
-  {{ viewpoint }}
+#   # set camera perspective
+#   {{ viewpoint }}
 
-  # delete the default representation after molecule has been loaded (start clean)
-  mol delrep 0 $Iter
-  mol selection all
+#   # delete the default representation after molecule has been loaded (start clean)
+#   # mol delrep 0 $Iter
+#   # mol selection all
 
-  # draw ball and stick model of molecular structure
-  mol material AOChalky
-  mol representation CPK 1.0 0.3 50.0 50.0
-  mol addrep $Iter
+#   # # draw ball and stick model of molecular structure
+#   # mol material AOChalky
+#   # mol representation CPK 1.0 0.3 50.0 50.0
+#   # mol addrep $Iter
 
-  # draw positive and negative isosurface for the orbitals
-  mol material Glass2
-  mol color ColorID 0
-  mol representation Isosurface $IsoOrb  0 0 0 1 1
-  mol addrep $Iter
+#   # # draw positive and negative isosurface for the orbitals
+#   # mol material Glass2
+#   # mol color ColorID 0
+#   # mol representation Isosurface $IsoOrb  0 0 0 1 1
+#   # mol addrep $Iter
 
-  mol material Glass2
-  mol color ColorID 3
-  mol representation Isosurface [expr -1 * $IsoOrb] 0 0 0 1 1
-  mol addrep $Iter
+#   # mol material Glass2
+#   # mol color ColorID 3
+#   # mol representation Isosurface [expr -1 * $IsoOrb] 0 0 0 1 1
+#   # mol addrep $Iter
 
-  # write tachyon scene file without rendering it
-  render Tachyon ${Orb}.dat
+#   # write tachyon scene file without rendering it
+#   render Tachyon ${Orb}.dat
 
-  # delete all 3 representations, that have been created for the orbitals
-  mol delrep 0 $Iter
-  mol delrep 0 $Iter
-  mol delrep 0 $Iter
+#   # delete all 3 representations, that have been created for the orbitals
+#   mol delrep 0 $Iter
+#   mol delrep 0 $Iter
+#   mol delrep 0 $Iter
 
-  mol delete $Iter
-  incr Iter
-}
+#   mol delete $Iter
+#   incr Iter
+# }
 
 # loop over all densities
 foreach Dens [list {{ cdddens }}] {
   # load cube into VMD
-  mol load cube ${Dens}.cube
+  mol load cube ${Dens}.cub
 
   # set camera perspective
   {{ viewpoint }}
@@ -68,9 +68,9 @@ foreach Dens [list {{ cdddens }}] {
   mol selection all
 
   # draw ball and stick model of molecular structure
-  mol material AOChalky
-  mol representation CPK 1.0 0.3 50.0 50.0
-  mol addrep $Iter
+  # mol material AOChalky
+  # mol representation CPK 1.0 0.3 50.0 50.0
+  # mol addrep $Iter
 
   # draw positive and negative isosurface for the orbitals
   mol material Glass2
@@ -80,13 +80,13 @@ foreach Dens [list {{ cdddens }}] {
   } else {
       mol color ColorID 0
   }
-  mol representation Isosurface $IsoDens  0 0 0 1 1
-  mol addrep $Iter
+  # mol representation Isosurface $IsoDens  0 0 0 1 1
+  # mol addrep $Iter
 
-  mol material Glass2
-  mol color ColorID 3
-  mol representation Isosurface [expr -1 * $IsoDens] 0 0 0 1 1
-  mol addrep $Iter
+  # mol material Glass2
+  # mol color ColorID 3
+  # mol representation Isosurface [expr -1 * $IsoDens] 0 0 0 1 1
+  # mol addrep $Iter
 
   # write tachyon scene file without rendering it
   render Tachyon ${Dens}.dat
