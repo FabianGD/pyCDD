@@ -3,15 +3,90 @@ import shutil
 from pathlib import Path
 from subprocess import Popen, PIPE
 
-from dask.distributed import Client
+# from dask.distributed import Client
+
+def viable_vmdrc(file):
+    with open(file, "r") as f:
+        rawdata = f.read()
+        if "after idle {" in rawdata:
+            return True
+        else:
+            return False
 
 
-def call_vmd(cwd):
-    if cwd is None:
-        cwd = Path(".")
+def find_vmdrc(cwd=Path(".")):
+    here = list(cwd.glob("*vmdrc*"))
+    home = list(Path(os.environ["HOME"]).glob("*vmdrc*"))
 
+    if len(here) == 1:
+        print("found a file called vmdrc here. Using this.")
+        if viable_vmdrc(here[0]):
+            return here[0]
+        else:
+            print("File {} is not recognized as a viable VMDRC file, continuing".format(here[0]))
+
+    elif len(here) >= 1:
+        print("Found more than one file called 'vmdrc' file, not sure which one to take.")
+        for file in here:
+            if viable_vmdrc(file):
+                return file
+            else:
+                print(f"File {file} is not recognized as a viable VMDRC file, continuing")
+                continue
+
+    # Checking the home directory for a file called ".vmdrc"
+    print("Nothing viable was found in the cwd, trying the $HOME directory")
+
+    if (len(home) == 1) and viable_vmdrc(home[0]):
+        return home[0]
+
+    elif len(home) >= 1:
+        print("Found more than one file called 'vmdrc' file, not sure which one to take.")
+        for file in home:
+            if viable_vmdrc(file) and "bak" not in file.name:
+                return file
+            else:
+                print(f"File {file} is rejected as VMDRC file, continuing.")
+                continue
+
+    # Base case
+    print("No viable vmdrc file was found, sorry.")
+    return None
+
+
+def provide_vmd_startup(file, cwd=Path(".")):
+    """
+    File takes a vmdrc file and prepares it for use as a startup script,
+    basically removing the "after idle" tag and the corresponding brackets
+    """
+
+    with open(file, "r") as rf:
+        while True:
+            # Consume lines until the "after idle" tag
+            line = rf.readline()
+            if "after idle {" in line:
+                break
+
+        raw_str = rf.readlines()[:-3]
+
+    writefile = cwd / "vmd_startup.vmd"
+
+    with open(writefile, "w") as wf:
+        wf.write("".join(raw_str))
+
+    return writefile
+
+
+def call_vmd(file_info, vmd_basecmd="vmd", vmd_template=Path("data/VMD.tcl"), cwd=Path(".")):
+    """
+    Modify the jinja2-templated VMD template file, get a viable vmd startup file and extract
+    the viewpoint from the visualisation state file
+    """
     # TODO
+
     vmd_scriptfile = Path("data/VMD.tcl")
+
+
     vmd_cmd = ["vmd", ]
 
     return
